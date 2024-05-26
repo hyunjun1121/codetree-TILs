@@ -1,7 +1,7 @@
 a = input().split()
 b = input().split()
 
-if a[1] =='M' or b[1] =='M':
+if int(a[0])>19 or int(b[0])>19:
     print(1)
 else:
     oprint(0)
