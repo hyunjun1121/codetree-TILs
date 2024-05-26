@@ -8,3 +8,4 @@ for i in range(b):
 number = 1
 for j in new_list:
     number *= j
+print(number)
