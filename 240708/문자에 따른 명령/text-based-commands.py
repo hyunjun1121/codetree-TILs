@@ -18,12 +18,11 @@ def possible_destinations(commands):
                     x -= 1
         return (x, y)
     
-    original_destination = simulate(commands)
-    destinations = {original_destination}
+    destinations = set()
     
-    for i, cmd in enumerate(commands):
+    for i in range(len(commands)):
         for new_cmd in 'LRF':
-            if cmd != new_cmd:
+            if commands[i] != new_cmd:
                 new_commands = commands[:i] + new_cmd + commands[i + 1:]
                 new_destination = simulate(new_commands)
                 destinations.add(new_destination)
