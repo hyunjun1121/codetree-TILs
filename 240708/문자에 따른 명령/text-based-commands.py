@@ -1,29 +1,37 @@
 def possible_destinations(commands):
+    # Map of direction changes
+    direction_changes = {
+        'L': -1,
+        'R': 1,
+        'F': 0
+    }
+
+    # Map of movements in (x, y) coordinates for each direction
+    movements = [
+        (0, 1),  # North
+        (1, 0),  # East
+        (0, -1), # South
+        (-1, 0)  # West
+    ]
+    
     def simulate(cmds):
-        direction = 0  # 0: north, 1: east, 2: south, 3: west
+        direction = 0  # Start facing north
         x, y = 0, 0
         for cmd in cmds:
-            if cmd == 'L':
-                direction = (direction - 1) % 4
-            elif cmd == 'R':
-                direction = (direction + 1) % 4
-            elif cmd == 'F':
-                if direction == 0:
-                    y += 1
-                elif direction == 1:
-                    x += 1
-                elif direction == 2:
-                    y -= 1
-                elif direction == 3:
-                    x -= 1
+            if cmd == 'F':
+                move_x, move_y = movements[direction]
+                x += move_x
+                y += move_y
+            else:
+                direction = (direction + direction_changes[cmd]) % 4
         return (x, y)
     
-    destinations = set()
+    original_destination = simulate(commands)
+    destinations = {original_destination}
     
-    for i in range(len(commands)):
-        original_cmd = commands[i]
+    for i, cmd in enumerate(commands):
         for new_cmd in 'LRF':
-            if original_cmd != new_cmd:
+            if cmd != new_cmd:
                 new_commands = commands[:i] + new_cmd + commands[i + 1:]
                 new_destination = simulate(new_commands)
                 destinations.add(new_destination)
