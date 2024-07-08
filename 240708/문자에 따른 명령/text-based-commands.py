@@ -1,49 +1,40 @@
-def count_distinct_positions(commands):
-    # Directions mapping: North, East, South, West
-    directions = ['N', 'E', 'S', 'W']
+def get_final_coordinates(commands):
+    # Function to simulate movement and return the final coordinates
+    direction = 0  # 0: north, 1: east, 2: south, 3: west
+    x, y = 0, 0
+    for command in commands:
+        if command == 'L':
+            direction = (direction - 1) % 4
+        elif command == 'R':
+            direction = (direction + 1) % 4
+        elif command == 'F':
+            if direction == 0:
+                y += 1
+            elif direction == 1:
+                x += 1
+            elif direction == 2:
+                y -= 1
+            elif direction == 3:
+                x -= 1
+    return (x, y)
+
+def find_distinct_destinations(commands):
+    possible_destinations = set()
     
-    def move(x, y, direction):
-        if direction == 'N':
-            return x, y + 1
-        elif direction == 'E':
-            return x + 1, y
-        elif direction == 'S':
-            return x, y - 1
-        elif direction == 'W':
-            return x - 1, y
-    
-    def new_direction(curr_dir, turn):
-        idx = directions.index(curr_dir)
-        if turn == 'L':
-            idx = (idx - 1) % 4
-        elif turn == 'R':
-            idx = (idx + 1) % 4
-        return directions[idx]
-    
-    n = len(commands)
-    distinct_positions = set()
-    
-    # Simulate each command being the incorrect one
-    for i in range(n):
-        for new_command in 'LRF':
+    for i in range(len(commands)):
+        for new_command in "LRF":
             if commands[i] == new_command:
                 continue
             
-            x, y = 0, 0
-            direction = 'N'
-            
-            # Apply commands with the ith one corrected
-            for j in range(n):
-                cmd = new_command if j == i else commands[j]
-                if cmd == 'F':
-                    x, y = move(x, y, direction)
-                else:
-                    direction = new_direction(direction, cmd)
-            
-            distinct_positions.add((x, y))
+            # Create a new command list with one change
+            new_commands = commands[:i] + new_command + commands[i+1:]
+            final_coordinates = get_final_coordinates(new_commands)
+            possible_destinations.add(final_coordinates)
     
-    return len(distinct_positions)
+    return len(possible_destinations)
 
-# Example usage
+# Input
 commands = input().strip()
-print(count_distinct_positions(commands))
+
+# Output the number of distinct points
+print(find_distinct_destinations(commands))
