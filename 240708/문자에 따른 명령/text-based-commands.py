@@ -22,8 +22,6 @@ def simulate(commands):
 def count_distinct_destinations(commands):
     n = len(commands)
     initial_positions, initial_directions = simulate(commands)
-    final_x, final_y = initial_positions[-1]
-
     distinct_destinations = set()
 
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
@@ -62,8 +60,9 @@ def count_distinct_destinations(commands):
     return len(distinct_destinations)
 
 # Read input
-commands = input().strip()
+import sys
+input = sys.stdin.read().strip()
 
 # Get the number of distinct possible destinations
-result = count_distinct_destinations(commands)
+result = count_distinct_destinations(input)
 print(result)
