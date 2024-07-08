@@ -1,40 +1,43 @@
-def get_final_coordinates(commands):
-    # Function to simulate movement and return the final coordinates
-    direction = 0  # 0: north, 1: east, 2: south, 3: west
-    x, y = 0, 0
-    for command in commands:
-        if command == 'L':
-            direction = (direction - 1) % 4
-        elif command == 'R':
-            direction = (direction + 1) % 4
-        elif command == 'F':
-            if direction == 0:
-                y += 1
-            elif direction == 1:
-                x += 1
-            elif direction == 2:
-                y -= 1
-            elif direction == 3:
-                x -= 1
-    return (x, y)
+def unique_destinations(commands):
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    
+    def move_and_get_position(commands):
+        x, y = 0, 0
+        dir_index = 0
+        for command in commands:
+            if command == 'L':
+                dir_index = (dir_index - 1) % 4
+            elif command == 'R':
+                dir_index = (dir_index + 1) % 4
+            elif command == 'F':
+                x += directions[dir_index][0]
+                y += directions[dir_index][1]
+        return (x, y)
 
-def find_distinct_destinations(commands):
-    possible_destinations = set()
+    original_position = move_and_get_position(commands)
+    unique_positions = set()
+    unique_positions.add(original_position)
     
     for i in range(len(commands)):
-        for new_command in "LRF":
-            if commands[i] == new_command:
-                continue
-            
-            # Create a new command list with one change
-            new_commands = commands[:i] + new_command + commands[i+1:]
-            final_coordinates = get_final_coordinates(new_commands)
-            possible_destinations.add(final_coordinates)
+        modified_commands = list(commands)
+        if commands[i] == 'L':
+            modified_commands[i] = 'R'
+            unique_positions.add(move_and_get_position(modified_commands))
+            modified_commands[i] = 'F'
+            unique_positions.add(move_and_get_position(modified_commands))
+        elif commands[i] == 'R':
+            modified_commands[i] = 'L'
+            unique_positions.add(move_and_get_position(modified_commands))
+            modified_commands[i] = 'F'
+            unique_positions.add(move_and_get_position(modified_commands))
+        elif commands[i] == 'F':
+            modified_commands[i] = 'L'
+            unique_positions.add(move_and_get_position(modified_commands))
+            modified_commands[i] = 'R'
+            unique_positions.add(move_and_get_position(modified_commands))
     
-    return len(possible_destinations)
+    return len(unique_positions)
 
-# Input
+# Input and Output
 commands = input().strip()
-
-# Output the number of distinct points
-print(find_distinct_destinations(commands))
+print(unique_destinations(commands))
