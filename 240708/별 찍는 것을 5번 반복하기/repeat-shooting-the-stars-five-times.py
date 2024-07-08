@@ -1,4 +1,4 @@
-de print_stars():
+def print_stars():
     print('**********')
 for i in range(5):
     print_stars()
