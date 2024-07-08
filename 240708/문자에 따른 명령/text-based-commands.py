@@ -1,9 +1,9 @@
 def get_new_position(commands):
-    # Initial position and direction (facing north)
+    # 초기 위치와 방향 설정 (북쪽을 향함)
     x, y = 0, 0
-    direction = 0 # 0: north, 1: east, 2: south, 3: west
+    direction = 0  # 0: 북, 1: 동, 2: 남, 3: 서
 
-    # Direction vectors for north, east, south, west
+    # 방향 벡터 설정 (북, 동, 남, 서 순)
     dx = [0, 1, 0, -1]
     dy = [1, 0, -1, 0]
 
@@ -15,14 +15,14 @@ def get_new_position(commands):
         elif command == 'F':
             x += dx[direction]
             y += dy[direction]
-    
+
     return (x, y)
 
 def different_positions(command_string):
     n = len(command_string)
     unique_positions = set()
     
-    # Check all possible incorrect commands
+    # 모든 가능한 잘못된 명령을 교정하여 도착 지점을 계산
     for i in range(n):
         for new_command in ['L', 'R', 'F']:
             if command_string[i] != new_command:
@@ -32,6 +32,6 @@ def different_positions(command_string):
     
     return len(unique_positions)
 
-# Example usage:
+# 예제 사용
 command_string = input().strip()
 print(different_positions(command_string))
