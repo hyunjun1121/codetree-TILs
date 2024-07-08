@@ -1,10 +1,4 @@
 def possible_destinations(commands):
-    from functools import lru_cache
-
-    # Define movement vectors for north, east, south, and west
-    movements = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-
-    @lru_cache(None)
     def simulate(cmds):
         direction = 0  # 0: north, 1: east, 2: south, 3: west
         x, y = 0, 0
@@ -14,18 +8,24 @@ def possible_destinations(commands):
             elif cmd == 'R':
                 direction = (direction + 1) % 4
             elif cmd == 'F':
-                move_x, move_y = movements[direction]
-                x += move_x
-                y += move_y
+                if direction == 0:
+                    y += 1
+                elif direction == 1:
+                    x += 1
+                elif direction == 2:
+                    y -= 1
+                elif direction == 3:
+                    x -= 1
         return (x, y)
     
     destinations = set()
     
     for i in range(len(commands)):
+        original_cmd = commands[i]
         for new_cmd in 'LRF':
-            if commands[i] != new_cmd:
+            if original_cmd != new_cmd:
                 new_commands = commands[:i] + new_cmd + commands[i + 1:]
-                new_destination = simulate(tuple(new_commands))
+                new_destination = simulate(new_commands)
                 destinations.add(new_destination)
     
     return len(destinations)
