@@ -1,11 +1,14 @@
-def preprocess_positions(commands):
-    # Initial position and direction (facing north)
+def calculate_positions(commands):
+    # Initialize position and direction (facing North)
     x, y, direction = 0, 0, 0
-    positions = [(x, y, direction)]
+    n = len(commands)
     
-    # Direction vectors (north, east, south, west)
+    # Direction vectors (North, East, South, West)
     dx = [0, 1, 0, -1]
     dy = [1, 0, -1, 0]
+    
+    # Prefix positions and directions
+    prefix_positions = [(x, y, direction)]
     
     for command in commands:
         if command == 'L':
@@ -15,20 +18,31 @@ def preprocess_positions(commands):
         elif command == 'F':
             x += dx[direction]
             y += dy[direction]
-        positions.append((x, y, direction))
+        prefix_positions.append((x, y, direction))
     
-    return positions
+    return prefix_positions
 
-def calculate_final_positions(commands, positions, n):
+def different_positions(command_string):
+    n = len(command_string)
+    
+    # Compute prefix positions
+    prefix_positions = calculate_positions(command_string)
+    
+    # Initialize the set of unique positions
     unique_positions = set()
+    
+    # Direction vectors (North, East, South, West)
     dx = [0, 1, 0, -1]
     dy = [1, 0, -1, 0]
-
+    
+    # Simulate correcting each command
     for i in range(n):
         for new_command in ['L', 'R', 'F']:
-            if commands[i] != new_command:
-                x, y, direction = positions[i]
+            if command_string[i] != new_command:
+                # Get the state before the modified command
+                x, y, direction = prefix_positions[i]
                 
+                # Apply the modified command
                 if new_command == 'L':
                     direction = (direction - 1) % 4
                 elif new_command == 'R':
@@ -36,9 +50,10 @@ def calculate_final_positions(commands, positions, n):
                 elif new_command == 'F':
                     x += dx[direction]
                     y += dy[direction]
-                
+
+                # Continue with the rest of the commands
                 for j in range(i + 1, n):
-                    command = commands[j]
+                    command = command_string[j]
                     if command == 'L':
                         direction = (direction - 1) % 4
                     elif command == 'R':
@@ -47,14 +62,9 @@ def calculate_final_positions(commands, positions, n):
                         x += dx[direction]
                         y += dy[direction]
                 
+                # Store the resulting position
                 unique_positions.add((x, y))
     
-    return unique_positions
-
-def different_positions(command_string):
-    n = len(command_string)
-    positions = preprocess_positions(command_string)
-    unique_positions = calculate_final_positions(command_string, positions, n)
     return len(unique_positions)
 
 # Example usage
