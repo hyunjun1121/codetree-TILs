@@ -1,68 +1,66 @@
-def simulate(commands):
-    x, y = 0, 0
-    direction = 0  # Start facing north
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    positions = [(0, 0)]
-    directions_at_each_step = [direction]
-
+def calculate_positions(commands):
+    # 초기 위치와 방향 설정 (북쪽을 향함)
+    x, y, direction = 0, 0, 0
+    positions = [(x, y, direction)]
+    
+    # 방향 벡터 설정 (북, 동, 남, 서 순)
+    dx = [0, 1, 0, -1]
+    dy = [1, 0, -1, 0]
+    
     for command in commands:
         if command == 'L':
             direction = (direction - 1) % 4
         elif command == 'R':
             direction = (direction + 1) % 4
         elif command == 'F':
-            dx, dy = directions[direction]
-            x += dx
-            y += dy
-        positions.append((x, y))
-        directions_at_each_step.append(direction)
+            x += dx[direction]
+            y += dy[direction]
+        positions.append((x, y, direction))
+    
+    return positions
 
-    return positions, directions_at_each_step
+def different_positions(command_string):
+    n = len(command_string)
+    unique_positions = set()
+    
+    # 전체 명령을 사전 계산
+    positions = calculate_positions(command_string)
 
-def count_distinct_destinations(commands):
-    n = len(commands)
-    initial_positions, initial_directions = simulate(commands)
-    distinct_destinations = set()
-
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    # 방향 벡터 설정 (북, 동, 남, 서 순)
+    dx = [0, 1, 0, -1]
+    dy = [1, 0, -1, 0]
 
     for i in range(n):
-        for replacement in 'LRF':
-            if commands[i] == replacement:
-                continue
-            
-            # Use initial positions and directions up to i
-            x, y = initial_positions[i]
-            direction = initial_directions[i]
-
-            if replacement == 'L':
-                direction = (direction - 1) % 4
-            elif replacement == 'R':
-                direction = (direction + 1) % 4
-            elif replacement == 'F':
-                dx, dy = directions[direction]
-                x += dx
-                y += dy
-
-            # Follow the remaining commands
-            for command in commands[i+1:]:
-                if command == 'L':
+        for new_command in ['L', 'R', 'F']:
+            if command_string[i] != new_command:
+                # Get the state before the modified command
+                x, y, direction = positions[i]
+                
+                # Apply the modified command
+                if new_command == 'L':
                     direction = (direction - 1) % 4
-                elif command == 'R':
+                elif new_command == 'R':
                     direction = (direction + 1) % 4
-                elif command == 'F':
-                    dx, dy = directions[direction]
-                    x += dx
-                    y += dy
+                elif new_command == 'F':
+                    x += dx[direction]
+                    y += dy[direction]
 
-            distinct_destinations.add((x, y))
+                # Continue with the rest of the commands
+                for j in range(i + 1, n):
+                    command = command_string[j]
+                    if command == 'L':
+                        direction = (direction - 1) % 4
+                    elif command == 'R':
+                        direction = (direction + 1) % 4
+                    elif command == 'F':
+                        x += dx[direction]
+                        y += dy[direction]
+                
+                # Store the resulting position
+                unique_positions.add((x, y))
+    
+    return len(unique_positions)
 
-    return len(distinct_destinations)
-
-# Read input
-import sys
-input = sys.stdin.read().strip()
-
-# Get the number of distinct possible destinations
-result = count_distinct_destinations(input)
-print(result)
+# 예제 사용
+command_string = input().strip()
+print(different_positions(command_string))
