@@ -31,7 +31,7 @@ def count_distinct_destinations(commands):
             if commands[i] == replacement:
                 continue
             
-            # Recalculate the final position after changing the i-th command
+            # Use initial positions and directions up to i
             x, y = initial_positions[i]
             direction = initial_directions[i]
 
