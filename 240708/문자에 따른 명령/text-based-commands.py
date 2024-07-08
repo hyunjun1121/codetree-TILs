@@ -1,14 +1,11 @@
 def calculate_positions(commands):
-    # Initialize position and direction (facing North)
+    # 초기 위치와 방향 설정 (북쪽을 향함)
     x, y, direction = 0, 0, 0
-    n = len(commands)
+    positions = [(x, y, direction)]
     
-    # Direction vectors (North, East, South, West)
+    # 방향 벡터 설정 (북, 동, 남, 서 순)
     dx = [0, 1, 0, -1]
     dy = [1, 0, -1, 0]
-    
-    # Prefix positions and directions
-    prefix_positions = [(x, y, direction)]
     
     for command in commands:
         if command == 'L':
@@ -18,29 +15,26 @@ def calculate_positions(commands):
         elif command == 'F':
             x += dx[direction]
             y += dy[direction]
-        prefix_positions.append((x, y, direction))
+        positions.append((x, y, direction))
     
-    return prefix_positions
+    return positions
 
 def different_positions(command_string):
     n = len(command_string)
-    
-    # Compute prefix positions
-    prefix_positions = calculate_positions(command_string)
-    
-    # Initialize the set of unique positions
     unique_positions = set()
     
-    # Direction vectors (North, East, South, West)
+    # 전체 명령을 사전 계산
+    positions = calculate_positions(command_string)
+
+    # 방향 벡터 설정 (북, 동, 남, 서 순)
     dx = [0, 1, 0, -1]
     dy = [1, 0, -1, 0]
-    
-    # Simulate correcting each command
+
     for i in range(n):
         for new_command in ['L', 'R', 'F']:
             if command_string[i] != new_command:
                 # Get the state before the modified command
-                x, y, direction = prefix_positions[i]
+                x, y, direction = positions[i]
                 
                 # Apply the modified command
                 if new_command == 'L':
@@ -67,6 +61,6 @@ def different_positions(command_string):
     
     return len(unique_positions)
 
-# Example usage
+# 예제 사용
 command_string = input().strip()
 print(different_positions(command_string))
