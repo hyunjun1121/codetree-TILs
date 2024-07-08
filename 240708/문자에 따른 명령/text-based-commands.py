@@ -1,65 +1,43 @@
-def calculate_positions(commands):
-    x, y, direction = 0, 0, 0  # Starting at origin facing north
-    positions = [(x, y, direction)]
-    
-    # Directions: 0 = North, 1 = East, 2 = South, 3 = West
-    dx = [0, 1, 0, -1]
-    dy = [1, 0, -1, 0]
-    
-    for command in commands:
-        if command == 'L':
-            direction = (direction - 1) % 4
-        elif command == 'R':
-            direction = (direction + 1) % 4
-        elif command == 'F':
-            x += dx[direction]
-            y += dy[direction]
-        positions.append((x, y, direction))
-    
-    return positions
+def get_distinct_destinations(commands):
+    # Initial direction is north (index 0)
+    directions = ['N', 'E', 'S', 'W']
+    moves = {'N': (0, 1), 'E': (1, 0), 'S': (0, -1), 'W': (-1, 0)}
+    command_list = list(commands)
+    n = len(command_list)
 
-def different_positions(command_string):
-    n = len(command_string)
-    unique_positions = set()
-    
-    # Precompute positions for the original command sequence
-    positions = calculate_positions(command_string)
+    def simulate(commands):
+        x, y = 0, 0
+        direction_index = 0  # Start facing north
+        for command in commands:
+            if command == 'L':
+                direction_index = (direction_index - 1) % 4
+            elif command == 'R':
+                direction_index = (direction_index + 1) % 4
+            elif command == 'F':
+                dx, dy = moves[directions[direction_index]]
+                x += dx
+                y += dy
+        return (x, y)
 
-    # Directions: 0 = North, 1 = East, 2 = South, 3 = West
-    dx = [0, 1, 0, -1]
-    dy = [1, 0, -1, 0]
+    # Original destination
+    original_destination = simulate(command_list)
+    distinct_destinations = set()
+    distinct_destinations.add(original_destination)
 
+    # Iterate over each command and change it
     for i in range(n):
-        for new_command in ['L', 'R', 'F']:
-            if command_string[i] != new_command:
-                # Get the state before the modified command
-                x, y, direction = positions[i]
-                
-                # Apply the modified command
-                if new_command == 'L':
-                    direction = (direction - 1) % 4
-                elif new_command == 'R':
-                    direction = (direction + 1) % 4
-                elif new_command == 'F':
-                    x += dx[direction]
-                    y += dy[direction]
+        original_command = command_list[i]
+        for new_command in 'LRF':
+            if new_command != original_command:
+                new_commands = command_list[:]
+                new_commands[i] = new_command
+                new_destination = simulate(new_commands)
+                distinct_destinations.add(new_destination)
 
-                # Continue with the rest of the commands
-                for j in range(i + 1, n):
-                    command = command_string[j]
-                    if command == 'L':
-                        direction = (direction - 1) % 4
-                    elif command == 'R':
-                        direction = (direction + 1) % 4
-                    elif command == 'F':
-                        x += dx[direction]
-                        y += dy[direction]
-                
-                # Store the resulting position
-                unique_positions.add((x, y))
-    
-    return len(unique_positions)
+    return len(distinct_destinations)
 
-# Example usage
-command_string = input().strip()
-print(different_positions(command_string))
+# Read input
+commands = input().strip()
+
+# Output the number of distinct destination points
+print(get_distinct_destinations(commands))
