@@ -5,5 +5,4 @@ if a>b:
     b = c
 a+=10
 b = b*2
-print(a, end =' ')
-print(b)
+print(a,b)
