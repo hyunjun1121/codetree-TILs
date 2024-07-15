@@ -1,12 +1,10 @@
 y,m,d = map(int, input().split())
 
-def decide():
+def decide(y):
     if (y%4 ==0 and not (y%100==0)) or (y%4 ==0 and (y%100==0) and y%400==0):
         return 100
     else:
         return 0 
-    
-
 
 def weather(m):
     if 3<=m<=5:
@@ -27,7 +25,7 @@ elif m in [4, 6, 9, 11]:
     if d>30:
         a+=1
 else:
-    if decide() == 100:
+    if decide(y) == 100:
         if d>29:
             a+=1
     else:
@@ -35,3 +33,5 @@ else:
             a+=1
 if a >0:
     print(-1)
+else:
+    weather(m)
