@@ -1,10 +1,8 @@
 n = int(input())
 
 n_list = list(map(int, input().split()))
-n
 
 def middle(a):
-    
     return n_list[int(a/2)]
     
 
